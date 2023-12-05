@@ -29,12 +29,12 @@ app = Flask(__name__)
 dataset = load_dataset(
     "csv",
     data_files={
-        "train": os.path.join("..", r"C:\Users\Vishnu\Documents\Gitprojects\ps\pathvqa\model", "trainpvqaimg.csv"),
-        "test": os.path.join("..", r"C:\Users\Vishnu\Documents\Gitprojects\ps\pathvqa\model", "testpvqaimg.csv")
+        "train": os.path.join("..", r"model", "trainpvqaimg.csv"),
+        "test": os.path.join("..", r"model", "testpvqaimg.csv")
     }
 )
 
-with open(os.path.join("..", r"C:\Users\Vishnu\Documents\Gitprojects\ps\pathvqa\model", "unique_answers.txt")) as f:
+with open(os.path.join("..", r"model", "unique_answers.txt")) as f:
     YNSanswer_space = f.read().splitlines()
 
 # Map function to process the dataset
@@ -84,7 +84,7 @@ class MultimodalCollator:
 
     def preprocess_images(self, images: List[str]):
         processed_images = self.preprocessor(
-            images=[Image.open(os.path.join("..", r"C:\Users\Vishnu\Documents\Gitprojects\ps\pathvqa\train",   image_id + ".jpg")).convert('RGB') for image_id in images],
+            images=[Image.open(os.path.join("..", r"train",   image_id + ".jpg")).convert('RGB') for image_id in images],
             return_tensors="pt",
         )
         return {
@@ -218,7 +218,7 @@ args = TrainingArguments(
 
 
 
-with open(r"C:\Users\Vishnu\Documents\Gitprojects\ps\pathvqa\modelcol.pkl", 'rb') as file:
+with open(r"modelcol.pkl", 'rb') as file:
     loaded_collator, loaded_model = pickle.load(file)
     loaded_model.to(device) 
 
@@ -250,6 +250,10 @@ def showExample(train=True, id=None, question=None, image=None):
         print("Example not found in the dataset.")
         
         
+        
+@app.route('/')
+def hello_world():
+    return 'Hello, World!'
         
 @app.route('/predict', methods=['POST'])
 def predict():
